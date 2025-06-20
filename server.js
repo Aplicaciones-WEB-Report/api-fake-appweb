@@ -1,11 +1,14 @@
 const jsonServer = require('json-server');
-const server = jsonServer.create();
-const router = jsonServer.router('db.json');
-const middlewares = jsonServer.defaults({
-  static: './public'
-});
+const path = require('path');
 
-// Configurar CORS para permitir peticiones desde cualquier origen
+const server = jsonServer.create();
+
+// Leer el archivo db.json
+const dbPath = path.join(__dirname, 'db.json');
+const router = jsonServer.router(dbPath);
+const middlewares = jsonServer.defaults();
+
+// Configurar CORS
 server.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -20,24 +23,32 @@ server.use((req, res, next) => {
 
 server.use(middlewares);
 
-// Todas las rutas van bajo /api
-server.use('/api', router);
-
-// Ruta de prueba
+// Ruta principal
 server.get('/', (req, res) => {
   res.json({
-    message: 'API funcionando correctamente',
+    message: 'API funcionando correctamente ✅',
     endpoints: [
       '/api/users',
       '/api/candidate_profiles',
+      '/api/employer_profiles',
       '/api/job_offers',
       '/api/applications',
-      '/api/messages'
+      '/api/messages',
+      '/api/interviews',
+      '/api/evaluations',
+      '/api/membership_plans',
+      '/api/employer_memberships'
+    ],
+    examples: [
+      '/api/users - Obtener todos los usuarios',
+      '/api/job_offers?status=Activa - Filtrar ofertas activas',
+      '/api/applications?candidate_id=1 - Aplicaciones de un candidato'
     ]
   });
 });
 
-const port = process.env.PORT || 3000;
-server.listen(port, () => {
-  console.log(`JSON Server corriendo en puerto ${port}`);
-});
+// Usar el router bajo /api
+server.use('/api', router);
+
+// Exportar para Vercel
+module.exports = server;

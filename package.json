@@ -1,7 +1,7 @@
 {
   "name": "mi-api-fake",
   "version": "1.0.0",
-  "description": "API fake con JSON Server",
+  "description": "API fake con JSON Server para Vercel",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,5 +9,8 @@
   },
   "dependencies": {
     "json-server": "^0.17.4"
+  },
+  "engines": {
+    "node": ">=14.x"
   }
 }
